@@ -1,22 +1,28 @@
-import {getCategories} from "../state/selectors";
+import {getActiveCategory} from "../state/selectors";
 import BookCategory from "./BookCategory";
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 import React from "react";
+import PropTypes from "prop-types";
 
-const BookCategoriesList = ({categories}) => (
+const CurrentBookCategory = ({category}) => (
     <div className="row">
-        { categories.map(category => (
-            <div className="col-6" key={category.name}>
-                <BookCategory
-                    name={category.name}
-                    books={category.books} />
-            </div>
-        ))}
+       <div className="col-6" key={category.name}>
+            <BookCategory
+                name={category.name}
+                books={category.books} />
+        </div>
     </div>
 )
 
+CurrentBookCategory.propTypes = {
+    category: PropTypes.shape({
+        name: PropTypes.string,
+        books: PropTypes.arrayOf(PropTypes.object)
+    })
+}
+
 const mapStateToProps = (store) => ({
-    categories: getCategories(store)
+    category: getActiveCategory(store)
 })
 
-export default connect(mapStateToProps)(BookCategoriesList)
+export default connect(mapStateToProps)(CurrentBookCategory)
