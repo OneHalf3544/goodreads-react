@@ -1,22 +1,25 @@
 import React, {useState} from "react";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
-import {ADD_BOOK_ACTION, DELETE_BOOK_ACTION} from "../state/actions";
+import {ADD_BOOK_ACTION, MODIFY_BOOK_ACTION, DELETE_BOOK_ACTION} from "../state/actions";
+import EditableText from "./EditableText";
 
-const BookItem= ({ book, deleteBook}) =>
-    (<li className="list-group-item d-flex p-1" key={book.title}>
-        <div className="flex-grow-1">{book.title}</div>
+const BookItem= ({ book, renameBook, deleteBook}) =>
+    (<li className="list-group-item d-flex p-1" data-for-test="book-item"  key={book.title}>
+        <div className="flex-grow-1">
+            <EditableText text={book.title} onNewText={newName => renameBook(book, newName)} />
+        </div>
         <button className="btn btn-danger" onClick={e => deleteBook(book)}>Delete</button>
     </li>)
 
-const BookCategory = ({name, books, addBook, deleteBook}) => {
+const BookCategory = ({name, books, addBook, renameBook, deleteBook}) => {
     const [newName, setNewName] = useState("")
 
     return (<div className="card">
         <h2 className="card-header">{name}</h2>
         <ul className="card-body list-group p-0">
             {books.map(book =>
-                <BookItem book={book} deleteBook={deleteBook} />
+                <BookItem book={book} renameBook={renameBook} deleteBook={deleteBook} />
                 )}
         </ul>
         <div className="card-footer d-flex flex-row p-1">
@@ -35,6 +38,15 @@ const mapDispatchToProps = dispatch => ({
     addBook(newName, setName) {
         dispatch({ type: ADD_BOOK_ACTION, payload: { book: {title: newName} } })
         setName("")
+    },
+    renameBook(book, newName) {
+        dispatch({type: MODIFY_BOOK_ACTION, payload: {
+            oldBook: book,
+            newBook: {
+                ...book,
+                title: newName
+            }
+        }})
     },
     deleteBook(book) {
         dispatch({ type: DELETE_BOOK_ACTION, payload: { book } })
