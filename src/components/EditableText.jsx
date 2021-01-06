@@ -5,13 +5,15 @@ const EditableText = ({text, onNewText}) => {
     const [inChange, setInChange] = useState(false)
     const [currentText, setCurrentText] = useState(text)
 
-    const handleSpecialKeys = (e, text) => {
+    const handleSpecialKeys = (e) => {
+        console.log(e, e.key)
         switch(e.key) {
             case 'Enter':
                 onNewText(currentText)
                 setInChange(false)
                 break
             case 'Escape':
+            case 'Esc': // IE/Edge specific value
                 setCurrentText(text)
                 setInChange(false)
                 break
@@ -28,7 +30,7 @@ const EditableText = ({text, onNewText}) => {
             type="text"
             value={currentText}
             onChange={e => setCurrentText(e.target.value)}
-            onKeyPress={e => handleSpecialKeys(e, currentText)}
+            onKeyDown={e => handleSpecialKeys(e)}
         />
     } else {
         return <div data-for-test={testId} onDoubleClick={e => setInChange(true)}>{currentText}</div>

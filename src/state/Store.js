@@ -1,4 +1,4 @@
-import {ADD_BOOK_ACTION, CHOOSE_CATEGORY_ACTION, DELETE_BOOK_ACTION} from "./actions";
+import {ADD_BOOK_ACTION, CHOOSE_CATEGORY_ACTION, DELETE_BOOK_ACTION, MODIFY_BOOK_ACTION} from "./actions";
 import {getActiveCategory} from "./selectors";
 import produce from 'immer'
 
@@ -25,10 +25,17 @@ export const initialState = {
 
 export const reducer = (state = initialState, action) => {
     return produce(state, draft => {
+        console.log(`reduce ${JSON.stringify(action)}`)
         switch (action.type) {
             case ADD_BOOK_ACTION:
                 getActiveCategory(draft).books.push(action.payload.book)
                 break
+            case MODIFY_BOOK_ACTION: {
+                const activeCategory = getActiveCategory(draft);
+                const {newBook, oldBook} = action.payload;
+                activeCategory.books = activeCategory.books.map(book => book.title === oldBook.title ? newBook : book)
+                break
+            }
             case DELETE_BOOK_ACTION:
                 const activeCategory = getActiveCategory(draft);
                 activeCategory.books = activeCategory.books.filter(book => book.title !== action.payload.book.title)

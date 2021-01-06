@@ -19,7 +19,7 @@ const BookCategory = ({name, books, addBook, renameBook, deleteBook}) => {
         <h2 className="card-header">{name}</h2>
         <ul className="card-body list-group p-0">
             {books.map(book =>
-                <BookItem book={book} renameBook={renameBook} deleteBook={deleteBook} />
+                <BookItem key={book.title} book={book} renameBook={renameBook} deleteBook={deleteBook} />
                 )}
         </ul>
         <div className="card-footer d-flex flex-row p-1">
